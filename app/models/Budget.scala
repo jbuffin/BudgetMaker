@@ -5,12 +5,9 @@ import play.api.libs.json.Json
 
 case class LineItem(category: Category, amount: Double)
 
-case class MonthlyBudget(month: Int, lineItem: List[LineItem])
-
-case class Budget(_id: JsValue, budget: List[MonthlyBudget])
+case class MonthlyBudget(_id: JsValue, year: Int, month: Int, lineItems: List[LineItem])
 
 object BudgetFormats {
 	implicit val lineItemFormat = Json.format[LineItem]
 	implicit val monthlyBudgetFormat = Json.format[MonthlyBudget]
-	implicit val budgetFormat = Json.format[Budget]
 }
