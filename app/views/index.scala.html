@@ -1,5 +1,49 @@
 @()
 
 @main("Welcome to BudgetMaker") {
-	
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Category</th>
+					<!-- ko foreach: budget -->
+					<th data-bind="text: $root.printFullMonth(month)"></th>
+					<!-- /ko -->
+					<th>Budget YTD</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr data-bind="with: budget()[0]">
+					<td data-bind="text: lineItems()[0].category"></td>
+					<!-- ko foreach: $parent.budget -->
+					<td data-bind="text: $data.lineItems()[0].amount"></td>
+					<!-- /ko -->
+					<td>$26,800</td>
+				</tr>
+			</tbody>
+			<tbody>
+				<tr>
+					<th>Budgeted Income</th>
+					<td>$2,900</td>
+					<td>$2,900</td>
+					<td>$3,000</td>
+					<td>$26,800</td>
+				</tr>
+				<tr>
+					<th>Budgeted Expenses</th>
+					<td><span style="color:red">($917)</span></td>
+					<td><span style="color:red">($968)</span></td>
+					<td><span style="color:red">($968)</span></td>
+					<td><span style="color:red">($8,651)</span></td>
+				</tr>
+				<tr>
+					<th>Budgeted Total</th>
+					<td><span style="color:red">($2.65)</span></td>
+					<td><span style="color:red">($2.65)</span></td>
+					<td><span style="color:red">($2.65)</span></td>
+					<td><span style="color:red">($405.23)</span></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 }
