@@ -6,17 +6,17 @@
 			<thead>
 				<tr>
 					<th>Category</th>
-					<!-- ko foreach: budget -->
+					<!-- ko foreach: budget()[0].amounts -->
 					<th data-bind="text: $root.printFullMonth(month)"></th>
 					<!-- /ko -->
 					<th>Budget YTD</th>
 				</tr>
 			</thead>
-			<tbody>
-				<tr data-bind="with: budget()[0]">
-					<td data-bind="text: lineItems()[0].category"></td>
-					<!-- ko foreach: $parent.budget -->
-					<td data-bind="text: $data.lineItems()[0].amount"></td>
+			<tbody data-bind="foreach: budget">
+				<tr>
+					<td data-bind="text: category"></td>
+					<!-- ko foreach: amounts -->
+					<td data-bind="text: amount"></td>
 					<!-- /ko -->
 					<td>$26,800</td>
 				</tr>
