@@ -24,23 +24,23 @@
 			<tbody>
 				<tr>
 					<th>Budgeted Income</th>
-					<td>$2,900</td>
-					<td>$2,900</td>
-					<td>$3,000</td>
+					<!-- ko foreach: budget -->
+					<td data-bind="text: '$'+$root.totalCategoryTypeThisMonth($data, 'income')"></td>
+					<!-- /ko -->
 					<td>$26,800</td>
 				</tr>
 				<tr>
 					<th>Budgeted Expenses</th>
-					<td><span style="color:red">($917)</span></td>
-					<td><span style="color:red">($968)</span></td>
-					<td><span style="color:red">($968)</span></td>
+					<!-- ko foreach: budget -->
+					<td data-bind="text: $root.totalCategoryTypeThisMonth($data, 'expense')"></td>
+					<!-- /ko -->
 					<td><span style="color:red">($8,651)</span></td>
 				</tr>
 				<tr>
 					<th>Budgeted Total</th>
+					<!-- ko foreach: budget -->
 					<td><span style="color:red">($2.65)</span></td>
-					<td><span style="color:red">($2.65)</span></td>
-					<td><span style="color:red">($2.65)</span></td>
+					<!-- /ko -->
 					<td><span style="color:red">($405.23)</span></td>
 				</tr>
 			</tbody>

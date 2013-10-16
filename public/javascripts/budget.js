@@ -4,6 +4,7 @@ if (ko) {
 			init : function(lineItemJSON) {
 				this.original = lineItemJSON;
 				this.category = ko.observable(lineItemJSON.category);
+				this.type = ko.observable(lineItemJSON.type);
 				this.amount = ko.observable(lineItemJSON.amount);
 			}
 	};
@@ -39,6 +40,16 @@ if (ko) {
 			});
 		}
 	};
+	budgetVM.totalCategoryTypeThisMonth = function(monthBudget, categoryType) {
+		console.log('computing total '+categoryType+' for '+monthBudget.month());
+		var total = 0;
+		ko.utils.arrayForEach(monthBudget.lineItems(), function(item) {
+			if(item.type() === categoryType) {
+				total += item.amount();
+			}
+		});
+		return total;
+	};
 	budgetVM.computeLineItemAmount = function(monthBudget, categoryToMatch) {
 		console.log('computing line item amounts');
 		console.log(monthBudget.lineItems());
@@ -61,9 +72,11 @@ if (ko) {
 			year : 2013,
 			lineItems : [{
 				category : 'Income',
+				type : 'income',
 				amount : 2901
 			}, {
 				category : 'Housing',
+				type : 'expense',
 				amount : 951
 			}]
 		}, {
@@ -71,9 +84,11 @@ if (ko) {
 			year : 2013,
 			lineItems : [{
 				category : 'Income',
+				type : 'income',
 				amount : 2902
 			}, {
 				category : 'Housing',
+				type : 'expense',
 				amount : 952
 			}]
 		}, {
@@ -81,9 +96,11 @@ if (ko) {
 			year : 2013,
 			lineItems : [{
 				category : 'Income',
+				type : 'income',
 				amount : 2903
 			}, {
 				category : 'Housing',
+				type : 'expense',
 				amount : 953
 			}]
 		}];
