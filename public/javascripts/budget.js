@@ -2,7 +2,6 @@ var budgetVM;
 if (ko) {
 	var LineItemObservable = {
 			init : function(lineItemJSON) {
-				this.original = lineItemJSON;
 				this.category = ko.observable(lineItemJSON.category);
 				this.type = ko.observable(lineItemJSON.type);
 				this.amount = ko.observable(lineItemJSON.amount);
@@ -10,7 +9,6 @@ if (ko) {
 	};
 	var MonthObservable = {
 			init : function(monthJSON) {
-				this.original = monthJSON;
 				this.year = ko.observable(monthJSON.year);
 				this.month = ko.observable(monthJSON.month);
 				this.lineItems = ko.observableArray([]);
@@ -45,7 +43,7 @@ if (ko) {
 		var total = 0;
 		ko.utils.arrayForEach(monthBudget.lineItems(), function(item) {
 			if(item.type() === categoryType) {
-				total += item.amount();
+				total += parseFloat(item.amount());
 			}
 		});
 		return total;
@@ -73,7 +71,7 @@ if (ko) {
 				return item.category() === lineItemCategory;
 			});
 			if(match) {
-				total += match.amount();
+				total += parseFloat(match.amount());
 			}
 		});
 		console.log('total for '+lineItemCategory+' is '+total);
@@ -82,7 +80,7 @@ if (ko) {
 	budgetVM.totalCategoryTypeYTD = function(categoryType) {
 		var total = 0;
 		ko.utils.arrayForEach(this.budget(), function(monthlyBudget) {
-			total += budgetVM.totalCategoryTypeThisMonth(monthlyBudget, categoryType);
+			total += parseFloat(budgetVM.totalCategoryTypeThisMonth(monthlyBudget, categoryType));
 		});
 		return total;
 	};
@@ -91,9 +89,9 @@ if (ko) {
 		ko.utils.arrayForEach(monthlyBudget.lineItems(), function(item) {
 			console.log(item.type());
 			if(item.type() === 'income') {
-				total += item.amount();
+				total += parseFloat(item.amount());
 			} else if(item.type() === 'expense') {
-				total -= item.amount();
+				total -= parseFloat(item.amount());
 			}
 		});
 		return total;
@@ -101,10 +99,10 @@ if (ko) {
 	budgetVM.budgetedTotalYTD = function() {
 		var total = 0;
 		ko.utils.arrayForEach(this.budget(), function(monthlyBudget) {
-			total += budgetVM.monthlyBudgetedTotal(monthlyBudget);
+			total += parseFloat(budgetVM.monthlyBudgetedTotal(monthlyBudget));
 		});
 		return total;
-	}
+	};
 	budgetVM.getYearlyBudget = function() {
 		console.log('getting the budget for '+this.year());
 		var fakeBudget = [{

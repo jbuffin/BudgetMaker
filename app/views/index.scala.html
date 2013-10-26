@@ -16,7 +16,9 @@
 				<tr>
 					<td data-bind="text: $data"></td>
 					<!-- ko foreach: $parent.budget-->
-					<td data-bind="text: $root.computeLineItemAmount($data, $parentContext.$data)"></td>
+					<td>
+						<input type="number" min="0" step="1" size="5" data-bind="value: $root.computeLineItemAmount($data, $parentContext.$data)"/>
+					</td>
 					<!-- /ko -->
 					<td data-bind="text: $root.computeLineTotalAmount($data)"></td>
 				</tr>
