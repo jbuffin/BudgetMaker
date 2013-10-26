@@ -60,11 +60,51 @@ if (ko) {
 		});
 		if(!match) {
 			console.log('no match');
-			return 'error';
+			return 0;
 		} else {
 			return match.amount;
 		}
 	};
+	budgetVM.computeLineTotalAmount = function(lineItemCategory) {
+		console.log('computing total for '+lineItemCategory+' category');
+		var total = 0;
+		ko.utils.arrayForEach(this.budget(), function(monthlyBudget) {
+			var match = ko.utils.arrayFirst(monthlyBudget.lineItems(), function(item) {
+				return item.category() === lineItemCategory;
+			});
+			if(match) {
+				total += match.amount();
+			}
+		});
+		console.log('total for '+lineItemCategory+' is '+total);
+		return total;
+	};
+	budgetVM.totalCategoryTypeYTD = function(categoryType) {
+		var total = 0;
+		ko.utils.arrayForEach(this.budget(), function(monthlyBudget) {
+			total += budgetVM.totalCategoryTypeThisMonth(monthlyBudget, categoryType);
+		});
+		return total;
+	};
+	budgetVM.monthlyBudgetedTotal = function(monthlyBudget) {
+		var total = 0;
+		ko.utils.arrayForEach(monthlyBudget.lineItems(), function(item) {
+			console.log(item.type());
+			if(item.type() === 'income') {
+				total += item.amount();
+			} else if(item.type() === 'expense') {
+				total -= item.amount();
+			}
+		});
+		return total;
+	};
+	budgetVM.budgetedTotalYTD = function() {
+		var total = 0;
+		ko.utils.arrayForEach(this.budget(), function(monthlyBudget) {
+			total += budgetVM.monthlyBudgetedTotal(monthlyBudget);
+		});
+		return total;
+	}
 	budgetVM.getYearlyBudget = function() {
 		console.log('getting the budget for '+this.year());
 		var fakeBudget = [{

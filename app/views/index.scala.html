@@ -18,7 +18,7 @@
 					<!-- ko foreach: $parent.budget-->
 					<td data-bind="text: $root.computeLineItemAmount($data, $parentContext.$data)"></td>
 					<!-- /ko -->
-					<td>$26,800</td>
+					<td data-bind="text: $root.computeLineTotalAmount($data)"></td>
 				</tr>
 			</tbody>
 			<tbody>
@@ -27,21 +27,21 @@
 					<!-- ko foreach: budget -->
 					<td data-bind="text: '$'+$root.totalCategoryTypeThisMonth($data, 'income')"></td>
 					<!-- /ko -->
-					<td>$26,800</td>
+					<td data-bind="text: '$'+totalCategoryTypeYTD('income')"></td>
 				</tr>
 				<tr>
 					<th>Budgeted Expenses</th>
 					<!-- ko foreach: budget -->
 					<td data-bind="text: $root.totalCategoryTypeThisMonth($data, 'expense')"></td>
 					<!-- /ko -->
-					<td><span style="color:red">($8,651)</span></td>
+					<td data-bind="text: '$'+totalCategoryTypeYTD('expense')"></td>
 				</tr>
 				<tr>
 					<th>Budgeted Total</th>
 					<!-- ko foreach: budget -->
-					<td><span style="color:red">($2.65)</span></td>
+					<td data-bind="text: '$'+$root.monthlyBudgetedTotal($data)"></td>
 					<!-- /ko -->
-					<td><span style="color:red">($405.23)</span></td>
+					<td data-bind="text: '$'+budgetedTotalYTD()"></td>
 				</tr>
 			</tbody>
 		</table>
