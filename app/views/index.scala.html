@@ -5,21 +5,25 @@
 		<table class="table table-striped">
 			<thead>
 				<tr>
-					<th>Category</th>
+					<th>Category <a data-toggle="modal" href="#addCategoryModal" class="glyphicon glyphicon-plus"></a></th>
 					<!-- ko foreach: budget -->
 					<th data-bind="text: $root.printFullMonth(month)"></th>
 					<!-- /ko -->
+					<th data-bind="if: budget().length < 12"><a  href="#" data-bind="click: addMonth, clickBubble: false" class="glyphicon glyphicon-plus"></a></th>
 					<th>Budget YTD</th>
 				</tr>
 			</thead>
 			<tbody data-bind="foreach: lineItemCategories">
 				<tr>
-					<td data-bind="text: $data"></td>
-					<!-- ko foreach: $parent.budget-->
+					<td>
+						<span data-bind="text: $data"></span>
+					</td>
+					<!-- ko foreach: $root.budget-->
 					<td>
 						<input type="number" min="0" step="1" size="5" data-bind="value: $root.computeLineItemAmount($data, $parentContext.$data)"/>
 					</td>
 					<!-- /ko -->
+					<td></td>
 					<td data-bind="text: $root.computeLineTotalAmount($data)"></td>
 				</tr>
 			</tbody>
@@ -29,6 +33,7 @@
 					<!-- ko foreach: budget -->
 					<td data-bind="text: '$'+$root.totalCategoryTypeThisMonth($data, 'income')"></td>
 					<!-- /ko -->
+					<td></td>
 					<td data-bind="text: '$'+totalCategoryTypeYTD('income')"></td>
 				</tr>
 				<tr>
@@ -36,6 +41,7 @@
 					<!-- ko foreach: budget -->
 					<td data-bind="text: $root.totalCategoryTypeThisMonth($data, 'expense')"></td>
 					<!-- /ko -->
+					<td></td>
 					<td data-bind="text: '$'+totalCategoryTypeYTD('expense')"></td>
 				</tr>
 				<tr>
@@ -43,9 +49,33 @@
 					<!-- ko foreach: budget -->
 					<td data-bind="text: '$'+$root.monthlyBudgetedTotal($data)"></td>
 					<!-- /ko -->
+					<td></td>
 					<td data-bind="text: '$'+budgetedTotalYTD()"></td>
 				</tr>
 			</tbody>
 		</table>
+	</div>
+	<div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Add Category</h4>
+				</div>
+				<div class="modal-body">
+					<label for="addCategoryModalInput">Category:&nbsp;</label>
+					<input name="addCategoryModalInput" id="addCategoryModalInput" type="text"/>
+					<label for="addCategoryModalType">Type:&nbsp;</label>
+					<select id="addCategoryModalType" name="addCategoryModalType">
+						<option value="income">Income</option>
+						<option value="expense">Expense</option>
+					</select>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button data-bind="click: addLineItem, clickBubble: false" type="button" class="btn btn-primary">Save changes</button>
+				</div>
+			</div>
+	    </div>
 	</div>
 }

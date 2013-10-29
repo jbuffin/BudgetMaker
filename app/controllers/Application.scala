@@ -4,10 +4,6 @@ import play.api._
 import play.api.mvc._
 
 object Application extends Controller {
-
-	def index = Action {
-		Redirect(routes.Application.budget)
-	}
 	
 	def budget = Action {
 		Ok(views.html.index())
@@ -16,7 +12,10 @@ object Application extends Controller {
 	def javascriptRoutes = Action { implicit request =>
 		import routes.javascript._
 		Ok(
-			Routes.javascriptRouter("jsRoutes")()
+			Routes.javascriptRouter("jsRoutes")(
+				BudgetAPI.getBudgetForYear,
+				BudgetAPI.saveBudgetYear
+			)
 		).as("text/javascript")
 	}
 
