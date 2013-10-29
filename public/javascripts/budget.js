@@ -1,5 +1,5 @@
 var budgetVM;
-var budgetIsFake = true;
+var budgetIsFake = false;
 var fakeBudget = JSON.parse('[{"_id":{"$oid":"526c0ba1c8bc073001a048d4"},"year":2013,"month":1,"lineItems":[]}]');
 function toggleFakeBudget() {
 	budgetIsFake = !budgetIsFake;
@@ -9,16 +9,16 @@ budgetLogger.setLevel('trace');
 if (ko) {
 	var LineItemObservable = {
 		init : function(lineItemJSON) {
-			console.log(lineItemJSON);
+//			console.log(lineItemJSON);
 			this.category = lineItemJSON.category;
 			this.categoryType = ko.observable(lineItemJSON.categoryType);
-			this.amount = ko.observable(lineItemJSON.amount);
-			console.log(ko.toJSON(this));
+			this.amount = ko.observable(lineItemJSON.amount).extend({requireNumber: 0});
+//			console.log(ko.toJSON(this));
 		}
 	};
 	var MonthObservable = {
 		init : function(monthJSON) {
-			console.log(monthJSON);
+//			console.log(monthJSON);
 			if (monthJSON._id) {
 				this._id = monthJSON._id;
 			}
@@ -34,7 +34,7 @@ if (ko) {
 	};
 	budgetVM = {
 		init : function(year) {
-			console.log('Setting the year to ' + year);
+//			console.log('Setting the year to ' + year);
 			this.year = ko.observable(year);
 			this.budget = ko.observableArray([]);
 			this.getYearlyBudget(budgetIsFake);
@@ -52,7 +52,7 @@ if (ko) {
 		}
 	};
 	budgetVM.totalCategoryTypeThisMonth = function(monthBudget, categoryType) {
-		console.log('computing total ' + categoryType + ' for ' + monthBudget.month());
+//		console.log('computing total ' + categoryType + ' for ' + monthBudget.month());
 		var total = 0;
 		ko.utils.arrayForEach(monthBudget.lineItems(), function(item) {
 			if (item.categoryType() === categoryType) {
@@ -62,22 +62,22 @@ if (ko) {
 		return total;
 	};
 	budgetVM.computeLineItemAmount = function(monthBudget, categoryToMatch) {
-		console.log('computing line item amounts');
-		console.log(monthBudget.lineItems());
-		console.log(categoryToMatch);
+//		console.log('computing line item amounts');
+//		console.log(monthBudget.lineItems());
+//		console.log(categoryToMatch);
 		var match = ko.utils.arrayFirst(monthBudget.lineItems(), function(item) {
-			console.log('does ' + item.category + ' match ' + categoryToMatch + '?');
+//			console.log('does ' + item.category + ' match ' + categoryToMatch + '?');
 			return item.category === categoryToMatch;
 		});
 		if (!match) {
-			console.log('no match');
+//			console.log('no match');
 			return 0;
 		} else {
 			return match.amount;
 		}
 	};
 	budgetVM.computeLineTotalAmount = function(lineItemCategory) {
-		console.log('computing total for ' + lineItemCategory + ' category');
+//		console.log('computing total for ' + lineItemCategory + ' category');
 		var total = 0;
 		ko.utils.arrayForEach(this.budget(), function(monthlyBudget) {
 			var match = ko.utils.arrayFirst(monthlyBudget.lineItems(), function(item) {
@@ -87,7 +87,7 @@ if (ko) {
 				total += parseFloat(match.amount());
 			}
 		});
-		console.log('total for ' + lineItemCategory + ' is ' + total);
+//		console.log('total for ' + lineItemCategory + ' is ' + total);
 		return total;
 	};
 	budgetVM.totalCategoryTypeYTD = function(categoryType) {
@@ -100,7 +100,7 @@ if (ko) {
 	budgetVM.monthlyBudgetedTotal = function(monthlyBudget) {
 		var total = 0;
 		ko.utils.arrayForEach(monthlyBudget.lineItems(), function(item) {
-			console.log(item.categoryType());
+//			console.log(item.categoryType());
 			if (item.categoryType() === 'income') {
 				total += parseFloat(item.amount());
 			} else if (item.categoryType() === 'expense') {
@@ -118,23 +118,23 @@ if (ko) {
 	};
 	budgetVM.addMonth = function() {
 		var newMonthJS = ko.toJS(this.budget()[this.budget().length - 1]);
-		console.log(newMonthJS);
+//		console.log(newMonthJS);
 		newMonthJS.month += 1;
 		if (newMonthJS._id) {
 			delete newMonthJS._id;
 		}
-		console.log(newMonthJS.month);
+//		console.log(newMonthJS.month);
 		var newMonth = Object.create(MonthObservable);
 		newMonth.init(newMonthJS);
-		console.log(newMonthJS);
-		console.log(newMonth);
+//		console.log(newMonthJS);
+//		console.log(newMonth);
 		this.budget.push(newMonth);
 	};
 	budgetVM.addLineItem = function() {
 		var newCategory = $('#addCategoryModalInput').val();
 		var newCategoryType = $('#addCategoryModalType').val();
 		if (newCategory) {
-			console.log(newCategory);
+//			console.log(newCategory);
 			ko.utils.arrayForEach(this.budget(), function(monthlyBudget) {
 				var lineItemObservable = Object.create(LineItemObservable);
 				var newLineItem = {
@@ -151,7 +151,7 @@ if (ko) {
 	};
 	budgetVM.getYearlyBudget = function(fake) {
 		budgetVM.budget([]);
-		console.log('getting the budget for ' + this.year());
+//		console.log('getting the budget for ' + this.year());
 		jsRoutes.controllers.BudgetAPI.getBudgetForYear(this.year()).ajax({
 			success : budgetVM.buildBudgetFromJSON
 		});
@@ -168,18 +168,33 @@ if (ko) {
 		}
 	}
 	budgetVM.saveBudget = function() {
-		console.log(ko.toJSON(this));
+//		console.log("{\"budget\": "+ko.toJSON(this.budget())+"}");
 		jsRoutes.controllers.BudgetAPI.saveBudgetYear().ajax({
-			data : ko.toJSON(this),
+			data : "{\"budget\": "+ko.toJSON(this.budget())+"}",
 			contentType : 'text/json',
-			success : function(ret) {
-				console.log(JSON.stringify(ret));
+			success : function(ret, status) {
+//				console.log('ret: '+JSON.stringify(ret));
+//				console.log('status: '+JSON.stringify(status));
+			},
+			error : function(jqXHR, status, error) {
+//				console.log('jqXHR: '+JSON.stringify(jqXHR));
 			}
 		});
 	};
 	budgetVM.printFullMonth = function(month) {
-		console.log('printing the month: ' + month());
+//		console.log('printing the month: ' + month());
 		return BudgetDateUtil.getFullMonthString(month() - 1);
+	};
+	
+	ko.extenders.requireNumber = function(target) {
+		var result = ko.computed({
+			read: target,
+			write: function(newValue) {
+				target(parseFloat(newValue));
+			}
+		}).extend({notify: 'always'});
+		result(parseFloat(target()));
+		return result;
 	};
 	$(function() {
 		budgetVM.init(new Date().getFullYear());

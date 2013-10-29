@@ -11,6 +11,7 @@ import play.api.libs.json.Json.toJsFieldJsValueWrapper
 import models.MonthlyBudget
 import models.BudgetFormats._
 import reactivemongo.bson.BSONObjectID
+import play.modules.reactivemongo.json.BSONFormats._
 
 object BudgetAPI extends Controller with MongoController {
 	def budgetCollection: JSONCollection = db.collection[JSONCollection]("budget")
@@ -32,19 +33,21 @@ object BudgetAPI extends Controller with MongoController {
 	}
 	
 	def getNewBudget(year: Int) = {
-		val toBeInserted = Json.obj("year" -> year, "month" -> 1, "lineItems" -> Json.arr())
-		val futureResult = budgetCollection.insert(toBeInserted)
+		val objectId = BSONObjectID.generate
+		val fromCaseClass = Json.toJson(MonthlyBudget(Option(Json.toJson(objectId)), year, 1))
+		val futureResult = budgetCollection.insert(fromCaseClass)
 		Async {
-			futureResult.map(_ => Ok(Json.arr(Json.toJson(toBeInserted))))
+			futureResult.map(_ => Ok(Json.arr(fromCaseClass)))
 		}
 	}
 	
 	def saveBudgetYear = Action(parse.json) { request =>
+		Logger.debug("save: "+request.body.toString)
 		request.body.\("budget").validate[List[MonthlyBudget]].map { budgets =>
 			budgets.map { budget =>
 				val futureResult = budgetCollection.save(budget)
 					Async {
-						futureResult.map(_ => Ok)
+						futureResult.map(_ => Ok("Ok"))
 					}
 			}
 			Ok("saved")
