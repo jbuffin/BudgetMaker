@@ -42,7 +42,6 @@ object BudgetAPI extends Controller with MongoController {
 	}
 	
 	def saveBudgetYear = Action(parse.json) { request =>
-		Logger.debug("save: "+request.body.toString)
 		request.body.\("budget").validate[List[MonthlyBudget]].map { budgets =>
 			budgets.map { budget =>
 				val futureResult = budgetCollection.save(budget)
@@ -55,4 +54,5 @@ object BudgetAPI extends Controller with MongoController {
 			BadRequest(Json.obj("res" -> "KO") ++ Json.obj("error" -> JsError.toFlatJson(error)))
 		}
 	}
+	
 }

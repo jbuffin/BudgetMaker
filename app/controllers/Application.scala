@@ -8,6 +8,10 @@ object Application extends Controller {
 	def budget = Action {
 		Ok(views.html.index())
 	}
+	
+	def transactions = Action {
+		Ok(views.html.transactions())
+	}
 
 	def javascriptRoutes = Action { implicit request =>
 		import routes.javascript._

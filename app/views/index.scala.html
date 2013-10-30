@@ -1,8 +1,10 @@
 @()
 
 @main("Welcome to BudgetMaker") {
+	<button type="button" class="btn btn-default" data-bind="click: saveBudget"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+	<button type="button" class="btn btn-default" data-bind="click: getYearlyBudget"><span class="glyphicon glyphicon-trash"></span></button>
 	<div class="table-responsive">
-		<table class="table table-striped">
+		<table class="table table-condensed table-striped">
 			<thead>
 				<tr>
 					<th>Category <a data-toggle="modal" href="#addCategoryModal" class="glyphicon glyphicon-plus"></a></th>
