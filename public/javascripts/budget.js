@@ -1,10 +1,7 @@
 var budgetVM;
 var budgetIsFake = false;
 var fakeBudget = JSON.parse('[{"_id":{"$oid":"526c0ba1c8bc073001a048d4"},"year":2013,"month":1,"lineItems":[]}]');
-function toggleFakeBudget() {
-	budgetIsFake = !budgetIsFake;
-	budgetVM.getYearlyBudget(budgetIsFake);
-}
+
 budgetLogger.setLevel('trace');
 if (ko) {
 	var LineItemObservable = {
