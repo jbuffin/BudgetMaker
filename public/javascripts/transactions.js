@@ -110,9 +110,9 @@ if(ko) {
 			this.monthsComputed = ko.computed(function() {
 				var monthsInScope = [];
 				if(transactionVM.transactions()) {
-					console.log('computing months');
+//					console.log('computing months');
 					ko.utils.arrayForEach(transactionVM.transactions(), function(transaction) {
-						console.log(transaction.date.getMonth());
+//						console.log(transaction.date.getMonth());
 						if(monthsInScope.indexOf(transaction.date.getMonth()) === -1) {
 							monthsInScope.push(transaction.date.getMonth())
 						}
@@ -123,7 +123,7 @@ if(ko) {
 			this.transactionsForMonthComputed = function(month) {
 				var transactionsForMonth = [];
 				ko.utils.arrayForEach(transactionVM.transactions(), function(transaction) {
-					console.log(transaction.date.getMonth()+' === '+month);
+//					console.log(transaction.date.getMonth()+' === '+month);
 					if(transaction.date.getMonth() === month) {
 						transactionsForMonth.push(transaction);
 					}
@@ -164,18 +164,21 @@ function loadCSV(src) {
 	var reader = new FileReader();
 	reader.onload = function(e) {
 		transactionVM.fileProcessing(true);
-		console.log('begin parsing the file');
+//		console.log('begin parsing the file');
 		var lines = reader.result.split(/[\r\n|\n]+/);
-		lines.forEach(function(line) {
-			var parsedLineArr = CSVtoArray(line);
-			if(parsedLineArr.length !== 0) {
-				var parsedLineObject = Object.create(Transaction);
-				parsedLineObject.init(parsedLineArr);
-				transactionVM.transactions.push(parsedLineObject);
-			}
-		});
-		transactionVM.fileProcessing(false);
-		console.log('done parsing the file');
+		setTimeout(function() {
+			lines.forEach(function(line) {
+				var parsedLineArr = CSVtoArray(line);
+				if(parsedLineArr.length !== 0) {
+					var parsedLineObject = Object.create(Transaction);
+					parsedLineObject.init(parsedLineArr);
+					transactionVM.transactions.push(parsedLineObject);
+				}
+			});
+			transactionVM.fileProcessing(false);
+		}, 0);
+		
+//		console.log('done parsing the file');
 	};
 	reader.readAsText(src);
 }
