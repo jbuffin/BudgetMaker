@@ -105,6 +105,7 @@ if(ko) {
 		init : function(year) {
 			this.year = ko.observable(year);
 			this.transactions = ko.observableArray([]);
+			this.currentMonth = ko.observable(null);
 			this.getYearlyTransactions(fake);
 			this.fileProcessing = ko.observable(false);
 			this.monthsComputed = ko.computed(function() {
@@ -120,21 +121,31 @@ if(ko) {
 				}
 				return monthsInScope;
 			});
-			this.transactionsForMonthComputed = function(month) {
+			this.transactionsForMonthComputed = function() {
 				var transactionsForMonth = [];
 				ko.utils.arrayForEach(transactionVM.transactions(), function(transaction) {
 //					console.log(transaction.date.getMonth()+' === '+month);
-					if(transaction.date.getMonth() === month) {
+					if(transaction.date.getMonth() === transactionVM.currentMonth()) {
 						transactionsForMonth.push(transaction);
 					}
 				});
 				return transactionsForMonth;
 			};
 		}
-	}
+	};
+	transactionVM.sortTransactions = function() {
+		transactionVM.transactions.sort(function(left, right) {
+			return left.date == right.date ? 0 : (left.date < right.date ? -1 : 1)
+		});
+	};
 	transactionVM.getYearlyTransactions = function(fake) {
 		transactionVM.transactions([]);
-		transactionVM.transactions(fakeTransactions);
+		fakeTransactions.forEach(function(transaction) {
+			var transactionObservable = Object.create(Transaction);
+			transactionObservable.init(transaction);
+			transactionVM.transactions.push(transactionObservable);
+		});
+		transactionVM.sortTransactions();
 	};
 	
 	$(function() {
@@ -164,33 +175,61 @@ function loadCSV(src) {
 	var reader = new FileReader();
 	reader.onload = function(e) {
 		transactionVM.fileProcessing(true);
-//		console.log('begin parsing the file');
 		var lines = reader.result.split(/[\r\n|\n]+/);
 		setTimeout(function() {
+	//		console.log('begin parsing the file');
+			var transaction = {};
 			lines.forEach(function(line) {
+//				console.log(line);
 				var parsedLineArr = CSVtoArray(line);
 				if(parsedLineArr.length !== 0) {
+					transaction.status = parsedLineArr[0];
+					transaction.date = new Date(parsedLineArr[2]);
+					transaction.description = parsedLineArr[4];
+					transaction.category = parsedLineArr[5];
+					transaction.amount = parseFloat(parsedLineArr[6]);
+					transaction.newTransaction = true;
 					var parsedLineObject = Object.create(Transaction);
-					parsedLineObject.init(parsedLineArr);
-					transactionVM.transactions.push(parsedLineObject);
+					parsedLineObject.init(transaction);
+					var existsAlready = false;
+					ko.utils.arrayForEach(transactionVM.transactions(), function(transaction) {
+						if(parsedLineObject.hashCode() === transaction.hashCode()) {
+							existsAlready = true;
+						}
+					});
+					if(!existsAlready) {
+						transactionVM.transactions.push(parsedLineObject);
+					}
 				}
 			});
+			transactionVM.sortTransactions();
 			transactionVM.fileProcessing(false);
+	//		console.log('done parsing the file');
 		}, 0);
 		
-//		console.log('done parsing the file');
 	};
 	reader.readAsText(src);
 }
 
 var Transaction = {
-	init : function(arr) {
-		this.status = arr[0];
-		this.date = new Date(arr[2]);
-		this.description = arr[4];
-		this.category = arr[5];
-		this.amount = parseFloat(arr[6]);
-		this.newTransaction = true;
+	init : function(transactionJSON) {
+		this.status = transactionJSON.status;
+		this.date = transactionJSON.date;
+		this.description = transactionJSON.description;
+		this.category = transactionJSON.category;
+		this.amount = transactionJSON.amount;
+		this.newTransaction = transactionJSON.newTransaction;
+	},
+	hashCode : function() {
+		var hash = 0;
+		transactionString = JSON.stringify(this);
+		if (transactionString.length == 0) return hash;
+		for (i = 0; i < transactionString.length; i++) {
+			char = transactionString.charCodeAt(i);
+			hash = ((hash<<5)-hash)+char;
+			hash = hash & hash; // Convert to 32bit integer
+		}
+		return hash;
 	}
 };
 

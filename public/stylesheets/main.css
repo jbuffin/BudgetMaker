@@ -11,7 +11,16 @@ body {
 .sidebar-nav {
 	padding: 9px 0;
 }
-
+.affix {
+	position: fixed;
+	top: 20px;
+}
+.affix-top {
+	
+}
+.affix-bottom {
+	position: absolute;
+}
 @media ( max-width : 980px) { /* Enable use of floated navbar text */
 	.navbar-text.pull-right {
 		float: none;
