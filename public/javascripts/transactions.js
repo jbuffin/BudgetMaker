@@ -2,105 +2,129 @@ var theFile = [];
 
 var transactionVM;
 var fake = true;
-var fakeTransactions = [{
-	"_id":{"$oid":"12341256"},
+var fakeTransactions = [ {
+	"_id" : {
+		"$oid" : "12341256"
+	},
 	status : 'posted',
 	date : new Date('10/12/2013'),
 	description : "Aldi store 1455",
 	category : 'Grocery',
 	amount : -12.00,
 	newTransaction : false
-},{
-	"_id":{"$oid":"12341256"},
+}, {
+	"_id" : {
+		"$oid" : "12341256"
+	},
 	status : 'posted',
 	date : new Date('10/12/2013'),
 	description : "Aldi store 1455",
 	category : 'Grocery',
 	amount : -21.00,
 	newTransaction : false
-},{
-	"_id":{"$oid":"12341256"},
+}, {
+	"_id" : {
+		"$oid" : "12341256"
+	},
 	status : 'posted',
 	date : new Date('10/12/2013'),
 	description : "Aldi store 1455",
 	category : 'Grocery',
 	amount : -52.00,
 	newTransaction : false
-},{
-	"_id":{"$oid":"12341256"},
+}, {
+	"_id" : {
+		"$oid" : "12341256"
+	},
 	status : 'posted',
 	date : new Date('10/13/2013'),
 	description : "Aldi store 1455",
 	category : 'Grocery',
 	amount : -12.00,
 	newTransaction : false
-},{
-	"_id":{"$oid":"12341256"},
+}, {
+	"_id" : {
+		"$oid" : "12341256"
+	},
 	status : 'posted',
 	date : new Date('9/12/2013'),
 	description : "Aldi store 1455",
 	category : 'Grocery',
 	amount : -13.00,
 	newTransaction : false
-},{
-	"_id":{"$oid":"12341256"},
+}, {
+	"_id" : {
+		"$oid" : "12341256"
+	},
 	status : 'posted',
 	date : new Date('9/13/2013'),
 	description : "Aldi store 1455",
 	category : 'Grocery',
 	amount : -12.00,
 	newTransaction : false
-},{
-	"_id":{"$oid":"12341256"},
+}, {
+	"_id" : {
+		"$oid" : "12341256"
+	},
 	status : 'posted',
 	date : new Date('9/14/2013'),
 	description : "Aldi store 1455",
 	category : 'Grocery',
 	amount : -12.00,
 	newTransaction : false
-},{
-	"_id":{"$oid":"12341256"},
+}, {
+	"_id" : {
+		"$oid" : "12341256"
+	},
 	status : 'posted',
 	date : new Date('9/15/2013'),
 	description : "Aldi store 1455",
 	category : 'Grocery',
 	amount : -12.00,
 	newTransaction : false
-},{
-	"_id":{"$oid":"12341256"},
+}, {
+	"_id" : {
+		"$oid" : "12341256"
+	},
 	status : 'posted',
 	date : new Date('10/7/2013'),
 	description : "Aldi store 1455",
 	category : 'Grocery',
 	amount : -12.00,
 	newTransaction : false
-},{
-	"_id":{"$oid":"12341256"},
+}, {
+	"_id" : {
+		"$oid" : "12341256"
+	},
 	status : 'posted',
 	date : new Date('10/8/2013'),
 	description : "Aldi store 1455",
 	category : 'Grocery',
 	amount : -12.00,
 	newTransaction : false
-},{
-	"_id":{"$oid":"12341256"},
+}, {
+	"_id" : {
+		"$oid" : "12341256"
+	},
 	status : 'posted',
 	date : new Date('10/9/2013'),
 	description : "Aldi store 1455",
 	category : 'Grocery',
 	amount : -12.00,
 	newTransaction : false
-},{
-	"_id":{"$oid":"12341256"},
+}, {
+	"_id" : {
+		"$oid" : "12341256"
+	},
 	status : 'posted',
 	date : new Date('10/23/2013'),
 	description : "Aldi store 1455",
 	category : 'Grocery',
 	amount : -12.00,
 	newTransaction : false
-}];
+} ];
 
-if(ko) {
+if (ko) {
 	var transactionVM = {
 		init : function(year) {
 			this.year = ko.observable(year);
@@ -110,11 +134,11 @@ if(ko) {
 			this.fileProcessing = ko.observable(false);
 			this.monthsComputed = ko.computed(function() {
 				var monthsInScope = [];
-				if(transactionVM.transactions()) {
-//					console.log('computing months');
+				if (transactionVM.transactions()) {
+					// console.log('computing months');
 					ko.utils.arrayForEach(transactionVM.transactions(), function(transaction) {
-//						console.log(transaction.date.getMonth());
-						if(monthsInScope.indexOf(transaction.date.getMonth()) === -1) {
+						// console.log(transaction.date.getMonth());
+						if (monthsInScope.indexOf(transaction.date.getMonth()) === -1) {
 							monthsInScope.push(transaction.date.getMonth())
 						}
 					});
@@ -124,8 +148,8 @@ if(ko) {
 			this.transactionsForMonthComputed = function() {
 				var transactionsForMonth = [];
 				ko.utils.arrayForEach(transactionVM.transactions(), function(transaction) {
-//					console.log(transaction.date.getMonth()+' === '+month);
-					if(transaction.date.getMonth() === transactionVM.currentMonth()) {
+					// console.log(transaction.date.getMonth()+' === '+month);
+					if (transaction.date.getMonth() === transactionVM.currentMonth()) {
 						transactionsForMonth.push(transaction);
 					}
 				});
@@ -147,14 +171,14 @@ if(ko) {
 		});
 		transactionVM.sortTransactions();
 	};
-	
+
 	$(function() {
 		transactionVM.init(new Date().getFullYear());
 		ko.applyBindings(transactionVM);
 	});
 }
 transactionVM.dropZoneText = ko.computed(function() {
-	if(this.fileProcessing) {
+	if (this.fileProcessing) {
 		return 'Processing File...';
 	} else {
 		return 'Drop File Here';
@@ -162,7 +186,7 @@ transactionVM.dropZoneText = ko.computed(function() {
 });
 
 var target = document.getElementById("fileDropZone");
-if(target) {
+if (target) {
 	target.addEventListener("dragover", function(e) {
 		e.preventDefault();
 	}, true);
@@ -177,36 +201,38 @@ function loadCSV(src) {
 		transactionVM.fileProcessing(true);
 		var lines = reader.result.split(/[\r\n|\n]+/);
 		setTimeout(function() {
-	//		console.log('begin parsing the file');
+			// console.log('begin parsing the file');
 			var transaction = {};
 			lines.forEach(function(line) {
-//				console.log(line);
+				// console.log(line);
 				var parsedLineArr = CSVtoArray(line);
-				if(parsedLineArr.length !== 0) {
-					transaction.status = parsedLineArr[0];
-					transaction.date = new Date(parsedLineArr[2]);
-					transaction.description = parsedLineArr[4];
-					transaction.category = parsedLineArr[5];
-					transaction.amount = parseFloat(parsedLineArr[6]);
-					transaction.newTransaction = true;
-					var parsedLineObject = Object.create(Transaction);
-					parsedLineObject.init(transaction);
-					var existsAlready = false;
-					ko.utils.arrayForEach(transactionVM.transactions(), function(transaction) {
-						if(parsedLineObject.hashCode() === transaction.hashCode()) {
-							existsAlready = true;
+				if (parsedLineArr.length) {
+					if (parsedLineArr[0]) {
+						transaction.status = parsedLineArr[0];
+						transaction.date = new Date(parsedLineArr[2]);
+						transaction.description = parsedLineArr[4];
+						transaction.category = parsedLineArr[5];
+						transaction.amount = parseFloat(parsedLineArr[6]);
+						transaction.newTransaction = true;
+						var parsedLineObject = Object.create(Transaction);
+						parsedLineObject.init(transaction);
+						var existsAlready = false;
+						ko.utils.arrayForEach(transactionVM.transactions(), function(transaction) {
+							if (parsedLineObject.hashCode() === transaction.hashCode()) {
+								existsAlready = true;
+							}
+						});
+						if (!existsAlready && parsedLineObject.status === 'posted') {
+							transactionVM.transactions.push(parsedLineObject);
 						}
-					});
-					if(!existsAlready) {
-						transactionVM.transactions.push(parsedLineObject);
 					}
 				}
 			});
 			transactionVM.sortTransactions();
 			transactionVM.fileProcessing(false);
-	//		console.log('done parsing the file');
+			// console.log('done parsing the file');
 		}, 0);
-		
+
 	};
 	reader.readAsText(src);
 }
@@ -223,10 +249,11 @@ var Transaction = {
 	hashCode : function() {
 		var hash = 0;
 		transactionString = JSON.stringify(this);
-		if (transactionString.length == 0) return hash;
+		if (transactionString.length == 0)
+			return hash;
 		for (i = 0; i < transactionString.length; i++) {
 			char = transactionString.charCodeAt(i);
-			hash = ((hash<<5)-hash)+char;
+			hash = ((hash << 5) - hash) + char;
 			hash = hash & hash; // Convert to 32bit integer
 		}
 		return hash;
